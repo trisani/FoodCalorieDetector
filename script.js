@@ -53,3 +53,5 @@ analyzeBtn.addEventListener('click', () => {
         calories.textContent = randomFood.cal;
     }, 2000); // 2-second fake analysis delay
 });
+
+
