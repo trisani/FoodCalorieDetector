@@ -1,167 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Food Calorie Detector</title>
-<style>
-/* 🌈 Vibrant Gradient Background */
-body {
-  margin: 0;
-  font-family: "Poppins", sans-serif;
-  background: linear-gradient(135deg, #ff9a8b, #ff6a88, #ff99ac);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  color: #fff;
-}
-
-.container {
-  background: rgba(255, 255, 255, 0.15);
-  padding: 30px;
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
-  text-align: center;
-  width: 350px;
-  animation: fadeIn 1s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-h1 {
-  font-size: 24px;
-  margin-bottom: 10px;
-  font-weight: 700;
-}
-
-input, button {
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  margin: 8px 0;
-  font-size: 14px;
-}
-
-input[type="file"] {
-  background: #fff;
-  color: #333;
-  cursor: pointer;
-}
-
-button {
-  background: #ff006e;
-  color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-  transition: transform 0.2s, background 0.3s;
-}
-button:hover {
-  transform: scale(1.05);
-  background: #fb5607;
-}
-
-#imagePreview img {
-  width: 100%;
-  border-radius: 12px;
-  margin-top: 10px;
-  box-shadow: 0 0 15px rgba(255,255,255,0.6);
-}
-
-#loading {
-  display: none;
-  font-size: 18px;
-  animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-  0% { opacity: 0.5; }
-  50% { opacity: 1; }
-  100% { opacity: 0.5; }
-}
-
-#result {
-  display: none;
-  background: #fff;
-  padding: 14px;
-  color: #222;
-  border-radius: 10px;
-  margin-top: 10px;
-  animation: pop 0.5s ease;
-}
-@keyframes pop {
-  0% { transform: scale(0.7); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Calorie Detector</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="container">
-  <h1>🍽️ Food Calorie Detector</h1>
 
-  <input type="file" id="imageInput" accept="image/*" />
-  <div id="imagePreview"><p>No image selected</p></div>
+    <!-- Wooden Background Layers -->
+    <div class="bg bg1"></div>
+    <div class="bg bg2"></div>
+    <div class="bg bg3"></div>
 
-  <button id="analyzeBtn">Analyze 🍰</button>
-  <div id="loading">⏳ Analyzing food...</div>
+    <!-- Main Content -->
+    <div class="container">
+        <h1>🍽️ Food Calorie Detector</h1>
+        <p>Upload an image of your food, enter its name (optional), and estimate the calories!</p>
 
-  <div id="result">🍕 <b id="foodName"></b><br>🔥 Calories: <b id="calories"></b> kcal</div>
-</div>
+        <!-- Upload Form -->
+        <form id="uploadForm">
+            <input type="file" id="foodImage" accept="image/*" required>
+            <input type="text" id="foodName" placeholder="Enter food name (optional)">
+            <button type="submit">Detect Calories</button>
+        </form>
 
-<script>
-const imageInput = document.getElementById('imageInput');
-const imagePreview = document.getElementById('imagePreview');
-const analyzeBtn = document.getElementById('analyzeBtn');
-const foodName = document.getElementById('foodName');
-const calories = document.getElementById('calories');
-const loading = document.getElementById('loading');
-const result = document.getElementById('result');
+        <!-- Image Preview -->
+        <div class="preview">
+            <img id="previewImage" src="" alt="Food Preview" style="display: none;">
+        </div>
 
-let selectedImage = null;
+        <!-- Processing Dialog -->
+        <div id="processingBox">Analyzing your dish... 🍴</div>
+    </div>
 
-imageInput.addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      imagePreview.innerHTML = `<img src="${ev.target.result}" />`;
-    };
-    reader.readAsDataURL(file);
-    selectedImage = file;
-  } else {
-    imagePreview.innerHTML = `<p>No image selected</p>`;
-    selectedImage = null;
-  }
-});
+    <footer>© 2025 Food Calorie Detector | Crafted with ☕ & 🍰</footer>
 
-analyzeBtn.addEventListener('click', () => {
-  if (!selectedImage) return alert("Upload an image first!");
+    <!-- Calorie Result Modal -->
+    <div id="resultModal">
+        <div class="modal-content">
+            <h2>🍰 Calorie Result 🍰</h2>
+            <p id="modalText"></p>
+            <button id="closeModal">Close</button>
+        </div>
+    </div>
 
-  result.style.display = "none";
-  loading.style.display = "block";
+    <script>
+        const imageInput = document.getElementById('foodImage');
+        const previewImage = document.getElementById('previewImage');
+        const processingBox = document.getElementById('processingBox');
+        const modal = document.getElementById('resultModal');
+        const modalText = document.getElementById('modalText');
+        const closeModal = document.getElementById('closeModal');
 
-  setTimeout(() => {
-    const foods = [
-      { name: "Burger", cal: 540 },
-      { name: "Pizza Slice", cal: 285 },
-      { name: "Chocolate Cake", cal: 350 },
-      { name: "Biryani", cal: 420 },
-      { name: "Samosa", cal: 262 }
-    ];
-    const random = foods[Math.floor(Math.random() * foods.length)];
+        // Image Preview Logic
+        imageInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
 
-    loading.style.display = "none";
-    result.style.display = "block";
+        // Form Submission Logic
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
 
-    foodName.textContent = random.name;
-    calories.textContent = random.cal;
-  }, 1500);
-});
-</script>
+            const foodName = document.getElementById('foodName').value || "your food";
+            if (!imageInput.files.length) {
+                alert("Please upload an image first!");
+                return;
+            }
+
+            // Show Processing Dialogue
+            processingBox.style.display = 'block';
+
+            // Simulate Processing Delay (like AI detection)
+            setTimeout(() => {
+                processingBox.style.display = 'none';
+                const randomCalories = Math.floor(Math.random() * 600) + 100;
+                modalText.textContent = `Estimated Calories for ${foodName}: ${randomCalories} kcal 🍲`;
+                modal.style.display = 'flex';
+            }, 2000);
+        });
+
+        // Close Modal
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    </script>
+
 </body>
 </html>
+
