@@ -148,9 +148,16 @@ button:hover {
 }
 
 .modal-content h2 {
-    font-family: 'Cinzel Decorative', cursive;
+    font-family: 'Cinzel Decorative', cursive';
     color: #b77a2b;
     margin-bottom: 15px;
+}
+
+/* ✅ DARK TEXT FOR CALORIE RESULT */
+#resultModal p, #modalText {
+    color: #3b2603 !important;
+    font-weight: 700;
+    font-size: 1.2em;
 }
 
 #closeModal {
