@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Calorie Detector</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Wooden Background Layers -->
+    <div class="bg bg1"></div>
+    <div class="bg bg2"></div>
+    <div class="bg bg3"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>🍽️ Food Calorie Detector</h1>
+        <p>Upload an image of your food, enter its name (optional), and estimate the calories!</p>
+
+        <!-- Upload Form -->
+        <form id="uploadForm">
+            <input type="file" id="foodImage" accept="image/*" required>
+            <input type="text" id="foodName" placeholder="Enter food name (optional)">
+            <button type="submit">Detect Calories</button>
+        </form>
+
+        <!-- Image Preview -->
+        <div class="preview">
+            <img id="previewImage" src="" alt="Food Preview" style="display: none;">
+        </div>
+
+        <!-- Processing Dialog -->
+        <div id="processingBox">Analyzing your dish... 🍴</div>
+    </div>
+
+    <footer>© 2025 Food Calorie Detector | Crafted with ☕ & 🍰</footer>
+
+    <!-- Calorie Result Modal -->
+    <div id="resultModal">
+        <div class="modal-content">
+            <h2>🍰 Calorie Result 🍰</h2>
+            <p id="modalText"></p>
+            <button id="closeModal">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const imageInput = document.getElementById('foodImage');
+        const previewImage = document.getElementById('previewImage');
+        const processingBox = document.getElementById('processingBox');
+        const modal = document.getElementById('resultModal');
+        const modalText = document.getElementById('modalText');
+        const closeModal = document.getElementById('closeModal');
+
+        // Image Preview Logic
+        imageInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Form Submission Logic
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const foodName = document.getElementById('foodName').value || "your food";
+            if (!imageInput.files.length) {
+                alert("Please upload an image first!");
+                return;
+            }
+
+            // Show Processing Dialogue
+            processingBox.style.display = 'block';
+
+            // Simulate Processing Delay (like AI detection)
+            setTimeout(() => {
+                processingBox.style.display = 'none';
+                const randomCalories = Math.floor(Math.random() * 600) + 100;
+                modalText.textContent = `Estimated Calories for ${foodName}: ${randomCalories} kcal 🍲`;
+                modal.style.display = 'flex';
+            }, 2000);
+        });
+
+        // Close Modal
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    </script>
+
+</body>
+</html>
